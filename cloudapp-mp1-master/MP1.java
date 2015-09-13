@@ -65,9 +65,11 @@ public class MP1 {
         String[] ret = new String[20];
         ArrayList<String> inputTokens = this.readInputFile();
         ArrayList<String> stopWords = new ArrayList<String>(Arrays.asList(stopWordsArray));
+        ArrayList<Integer> indicesToRead = new ArrayList<Integer>(Arrays.asList(getIndexes()));
         HashMap<String, Integer> frequencyMap = new HashMap<String, Integer>();
 
-        for (String str: inputTokens) {
+        for (int index: indicesToRead) {
+            String str = inputTokens.get(index);
             StringTokenizer tokens = new StringTokenizer(str, delimiters);
             while(tokens.hasMoreTokens()){
                 String word = tokens.nextToken().toLowerCase().trim();
@@ -93,7 +95,7 @@ public class MP1 {
             }
             String key = (String) itr.next();
             int val = frequencyMap.get(key);
-            System.out.println(key + " "+ val);
+            ret[retIndex] = key;
             retIndex++;
         }
 
@@ -110,34 +112,20 @@ public class MP1 {
 
     public ArrayList<String> readInputFile() throws Exception{
         ArrayList<String> inputTokens = new ArrayList<String>();
-        ArrayList<Integer> indicesToRead = new ArrayList<Integer>(Arrays.asList(getIndexes()));
+        String line;
 
-        // try {
-            // File file = new File(this.inputFileName);
-            // FileReader fileReader = new FileReader(file);
-            // BufferedReader bufferedReader = new BufferedReader(fileReader);
-        //     while ((line = bufferedReader.readLine()) != null) {
-        //         if (indicesToRead.contains(index)) {
-        //             inputTokens.add(line);
-        //         }
-        //         index++;
-        //     }
-        //     fileReader.close();
-        // }catch (IOException e) {
-        //     e.printStackTrace();
-        // }
-            Scanner sc = new Scanner(new File(this.inputFileName));
-            String line;
-            int index = 0;
-            while(sc.hasNext()){
-                if (indicesToRead.contains(index)){
-                    String word = sc.next();
-                    inputTokens.add(word);
-                    System.out.println(word + " "+ index);
-                }
-                index++;
+        try {
+            File file = new File(this.inputFileName);
+            FileReader fileReader = new FileReader(file);
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+            while ((line = bufferedReader.readLine()) != null) {
+                inputTokens.add(line);
             }
-            sc.close();
+            fileReader.close();
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+
 
         // 9060 objects
 
@@ -169,10 +157,12 @@ class ValueComparator implements Comparator<String> {
     }
 
     public int compare(String a, String b) {
-        if (map.get(a) >= map.get(b)) {
+        if (map.get(a) > map.get(b)) {
             return -1;
+        } else if (map.get(a) == map.get(b)){
+            return a.compareTo(b);
         } else {
             return 1;
-        } // returning 0 would merge keys
+        }
     }
 }
