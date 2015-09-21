@@ -1,4 +1,3 @@
-import apple.laf.JRSUIUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
@@ -209,10 +208,10 @@ public class TopTitles extends Configured implements Tool {
                 Integer count = Integer.parseInt(pair[1].toString());
                 countToTitleMap.add(new Pair<Integer, String>(count, word));
                 if (countToTitleMap.size() > 10) {
-                    countToTitleMap.remove(countToWordMap.first());
+                    countToTitleMap.remove(countToTitleMap.first());
                 }
             }
-            for (Pair<Integer, String> item: countToWordMap) {
+            for (Pair<Integer, String> item: countToTitleMap) {
                 Text word = new Text(item.second);
                 IntWritable value = new IntWritable(item.first);
                 context.write(word, value);
