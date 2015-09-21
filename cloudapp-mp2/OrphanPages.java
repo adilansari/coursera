@@ -27,6 +27,21 @@ public class OrphanPages extends Configured implements Tool {
     @Override
     public int run(String[] args) throws Exception {
         //TODO
+        Job job = Job.getInstance(this.getConf(), "Orphan Pages");
+        job.setOutputKeyClass(IntWritable.class);
+        job.setOutputValueClass(NullWritable.class);
+
+        job.setMapOutputKeyClass(IntWritable.class);
+        job.setMapOutputValueClass(IntWritable.class);
+
+        job.setMapperClass(LinkCountMap.class);
+        job.setReducerClass(OrphanPageReduce.class);
+
+        FileInputFormat.setInputPaths(job, new Path(args[0]));
+        FileOutputFormat.setOutputPath(job, new Path(args[1]));
+
+        job.setJarByClass(OrphanPages.class);
+        return job.waitForCompletion(true) ? 0 : 1;
     }
 
     public static class LinkCountMap extends Mapper<Object, Text, IntWritable, IntWritable> {
@@ -34,13 +49,13 @@ public class OrphanPages extends Configured implements Tool {
         public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
             String line = value.toString();
             StringTokenizer tokens = new StringTokenizer(line, ": ");
-            Integer key = Integer.parseInt(tokens.nextToken());
+            Integer parentKey = Integer.parseInt(tokens.nextToken());
 
             while(tokens.hasMoreTokens()){
                 Integer val = Integer.parseInt(tokens.nextToken());
                 context.write(new IntWritable(val), new IntWritable(1));
             }
-            context.write(new IntWritable(key), new IntWritable(0));
+            context.write(new IntWritable(parentKey), new IntWritable(0));
         }
     }
 
@@ -53,7 +68,7 @@ public class OrphanPages extends Configured implements Tool {
                 sum += val.get();
             }
             if (sum == 0) {
-                context.write(key);
+                context.write(key, null);
             }
         }
     }
