@@ -212,7 +212,6 @@ public class TopTitleStatistics extends Configured implements Tool {
                 }
             }
 
-            ArrayList<Integer> topFreqs = new ArrayList<Integer>();
             Integer count = 0;
             for (Pair<Integer, String> item: countToTitleMap) {
                 Integer value = (Integer)item.first;
