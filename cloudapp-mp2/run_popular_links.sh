@@ -10,4 +10,4 @@ hadoop fs -rm -r /mp2/E-output
 hadoop jar TopPopularLinks.jar TopPopularLinks -D N=5 /mp2/links /mp2/E-output
 
 hadoop fs -cat /mp2/E-output/part*
-hadoop fs -cat /mp2/E-output/part-r-00000 | sort -n -k2 | head -n 10
+hadoop fs -cat /mp2/E-output/part-r-00000 | head -n 15
