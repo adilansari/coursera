@@ -68,7 +68,7 @@ public class OrphanPages extends Configured implements Tool {
                 sum += val.get();
             }
             if (sum == 0) {
-                context.write(key, null);
+                context.write(key, NullWritable.get());
             }
         }
     }
