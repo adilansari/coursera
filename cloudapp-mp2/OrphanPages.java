@@ -32,7 +32,15 @@ public class OrphanPages extends Configured implements Tool {
     public static class LinkCountMap extends Mapper<Object, Text, IntWritable, IntWritable> {
         @Override
         public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
-            //TODO
+            String line = value.toString();
+            StringTokenizer tokens = new StringTokenizer(line, ": ");
+            Integer key = Integer.parseInt(tokens.nextToken());
+
+            while(tokens.hasMoreTokens()){
+                Integer val = Integer.parseInt(tokens.nextToken());
+                context.write(new IntWritable(val), new IntWritable(1));
+            }
+            context.write(new IntWritable(key), new IntWritable(0));
         }
     }
 
@@ -40,6 +48,13 @@ public class OrphanPages extends Configured implements Tool {
         @Override
         public void reduce(IntWritable key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
             //TODO
+            int sum = 0;
+            for (IntWritable val: values) {
+                sum += val.get();
+            }
+            if (sum == 0) {
+                context.write(key);
+            }
         }
     }
 }
