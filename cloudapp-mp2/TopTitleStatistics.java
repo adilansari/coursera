@@ -231,7 +231,7 @@ public class TopTitleStatistics extends Configured implements Tool {
             for (Pair<Integer, String> item: countToTitleMap) {
                 Integer value = (Integer)item.first;
                 Integer diff = mean - value;
-                var = var + (Integer)Math.pow(diff, 2);
+                var = var + (diff * diff);
             }
 
             var = var/count;
