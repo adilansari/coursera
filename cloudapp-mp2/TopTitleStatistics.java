@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
+import java.lang.Math;
 
 // Don't Change >>>
 public class TopTitleStatistics extends Configured implements Tool {
@@ -223,12 +224,17 @@ public class TopTitleStatistics extends Configured implements Tool {
                 if (value <= min) {
                     min = value;
                 }
-                // Text word = new Text(item.second);
-                // IntWritable value = new IntWritable(item.first);
-                // context.write(word, value);
             }
 
             mean = sum/count;
+
+            for (Pair<Integer, String> item: countToTitleMap) {
+                Integer value = (Integer)item.first;
+                Integer diff = mean - value;
+                var = var + Math.pow(diff, 2);
+            }
+
+            var = var/count;
 
             context.write(new Text("Mean"), new IntWritable(mean));
             context.write(new Text("Sum"), new IntWritable(sum));
