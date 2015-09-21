@@ -128,7 +128,7 @@ public class TopTitles extends Configured implements Tool {
 
         @Override
         public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
-        // TODO
+            // TODO
             String line = value.toString();
             StringTokenizer tokens = new StringTokenizer(line, this.delimiters);
             while (tokens.hasMoreTokens()) {
