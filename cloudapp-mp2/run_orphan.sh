@@ -10,4 +10,4 @@ hadoop fs -rm -r /mp2/D-output
 hadoop jar OrphanPages.jar OrphanPages /mp2/links /mp2/D-output
 
 hadoop fs -cat /mp2/D-output/part*
-hadoop fs -cat /mp2/D-output/part-r-00000 | sort -n -k2 | head -n 10
+hadoop fs -cat /mp2/D-output/part-r-00000 | head -n 15

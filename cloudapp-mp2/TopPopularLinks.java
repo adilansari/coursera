@@ -168,7 +168,7 @@ public class TopPopularLinks extends Configured implements Tool {
         public void reduce(NullWritable key, Iterable<IntArrayWritable> values, Context context) throws IOException, InterruptedException {
             // TODO
             for (IntArrayWritable val: values) {
-                Integer[] pair= (Integer[]) val.toArray();
+                IntWritable[] pair= (IntWritable[]) val.toArray();
                 Integer node = Integer.parseInt(pair[0].toString());
                 Integer count = Integer.parseInt(pair[1].toString());
                 countToNodeMap.add(new Pair<Integer, Integer>(count, node));
