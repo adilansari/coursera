@@ -161,7 +161,10 @@ public class PopularityLeague extends Configured implements Tool {
         public void reduce(IntWritable key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
             // TODO
             Integer _node = Integer.parseInt(key.toString());
-            Integer count = Integer.parseInt(values.next().toString());
+            Integer count;
+            for(IntWritable val: values){
+                count = val.get();
+            }
             countToNodeMap.add(new Pair<Integer, Integer>(count, _node));
 
             Integer counter = 0;
