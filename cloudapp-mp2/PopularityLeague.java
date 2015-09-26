@@ -157,12 +157,6 @@ public class PopularityLeague extends Configured implements Tool {
         // private TreeSet<Pair<Integer, Integer>> countToNodeMap = new TreeSet<Pair<Integer, Integer>>();
         private HashMap<Integer, Integer> nodeCountMap = new HashMap<Integer, Integer>();
 
-        public static TreeMap<Integer, Integer> SortByValue(HashMap<Integer, Integer> map) {
-            ValueComparator vc =  new ValueComparator(map);
-            TreeMap<Integer,Integer> sortedMap = new TreeMap<Integer,Integer>(vc);
-            sortedMap.putAll(map);
-            return sortedMap;
-        }
 
         @Override
         public void reduce(IntWritable key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
@@ -174,16 +168,18 @@ public class PopularityLeague extends Configured implements Tool {
             }
             nodeCountMap.put(node, count);
 
-            // TreeMap<Integer, Integer> sortedMap = SortByValue(nodeCountMap);
-            ValueComparator vc =  new ValueComparator(nodeCountMap);
-            TreeMap<Integer,Integer> sortedMap = new TreeMap<Integer,Integer>(vc);
-            sortedMap.putAll(nodeCountMap);
+            context.write(new IntWritable(node), new IntWritable(count));
 
-            Integer counter = 0;
-            for (Integer _node: sortedMap.keySet()) {
-                context.write(new IntWritable(_node), new IntWritable(counter));
-                counter++;
-            }
+            // TreeMap<Integer, Integer> sortedMap = SortByValue(nodeCountMap);
+            // ValueComparator vc =  new ValueComparator(nodeCountMap);
+            // TreeMap<Integer,Integer> sortedMap = new TreeMap<Integer,Integer>(vc);
+            // sortedMap.putAll(nodeCountMap);
+
+            // Integer counter = 0;
+            // for (Integer _node: sortedMap.keySet()) {
+            //     context.write(new IntWritable(_node), new IntWritable(counter));
+            //     counter++;
+            // }
         }
     }
 }
