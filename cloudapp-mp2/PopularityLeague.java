@@ -69,8 +69,8 @@ public class PopularityLeague extends Configured implements Tool {
         jobB.setOutputKeyClass(IntWritable.class);
         jobB.setOutputValueClass(IntWritable.class);
 
-        jobB.setMapOutputKeyClass(IntWritable.class);
-        jobB.setMapOutputValueClass(IntWritable.class);
+        jobB.setMapOutputKeyClass(NullWritable.class);
+        jobB.setMapOutputValueClass(IntArrayWritable.class);
 
         jobB.setMapperClass(TopLinksMap.class);
         jobB.setReducerClass(TopLinksReduce.class);
@@ -130,8 +130,8 @@ public class PopularityLeague extends Configured implements Tool {
         }
     }
 
-    public static class TopLinksMap extends Mapper<Text, Text, IntWritable, IntWritable> {
-
+    public static class TopLinksMap extends Mapper<Text, Text, NullWritable, IntArrayWritable> {
+        private TreeSet<Pair<Integer, Integer>> countToNodeMap = new TreeSet<Pair<Integer, Integer>>();
         List<String> league;
 
         @Override
@@ -148,60 +148,39 @@ public class PopularityLeague extends Configured implements Tool {
             String node = key.toString();
 
             if (this.league.contains(node)){
-                context.write(new IntWritable(Integer.parseInt(node)), new IntWritable(count));
+                countToNodeMap.add(new Pair<Integer, Integer>(count, Integer.parseInt(node)));
             }
         }
-    }
-
-    public static class TopLinksReduce extends Reducer<IntWritable, IntWritable, IntWritable, IntWritable> {
-        // private TreeSet<Pair<Integer, Integer>> countToNodeMap = new TreeSet<Pair<Integer, Integer>>();
-        private HashMap<Integer, Integer> nodeCountMap = new HashMap<Integer, Integer>();
-
 
         @Override
-        public void reduce(IntWritable key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
+        protected void cleanup(Context context) throws IOException, InterruptedException {
             // TODO
-            Integer node = Integer.parseInt(key.toString());
-            Integer count= 0;
-            for(IntWritable val: values){
-                count = val.get();
+            Integer counter = 0;
+            for (Pair<Integer, Integer> item : countToNodeMap) {
+                Integer[] values = {item.second, counter};
+                IntArrayWritable val = new IntArrayWritable(values);
+                context.write(NullWritable.get(), val);
+                counter++;
             }
-            nodeCountMap.put(node, count);
+        }
+    }
 
-            context.write(new IntWritable(node), new IntWritable(count));
+    public static class TopLinksReduce extends Reducer<NullWritable, IntArrayWritable, IntWritable, IntWritable> {
+        private HashMap<Integer, Integer> nodeCountMap = new HashMap<Integer, Integer>();
 
-            // TreeMap<Integer, Integer> sortedMap = SortByValue(nodeCountMap);
-            // ValueComparator vc =  new ValueComparator(nodeCountMap);
-            // TreeMap<Integer,Integer> sortedMap = new TreeMap<Integer,Integer>(vc);
-            // sortedMap.putAll(nodeCountMap);
-
-            // Integer counter = 0;
-            // for (Integer _node: sortedMap.keySet()) {
-            //     context.write(new IntWritable(_node), new IntWritable(counter));
-            //     counter++;
-            // }
+        @Override
+        public void reduce(NullWritable key, Iterable<IntArrayWritable> values, Context context) throws IOException, InterruptedException {
+            // TODO
+            for (IntArrayWritable val: values) {
+                IntWritable[] pair= (IntWritable[]) val.toArray();
+                Integer node = Integer.parseInt(pair[0].toString());
+                Integer count = Integer.parseInt(pair[1].toString());
+                context.write(new IntWritable(node), new IntWritable(count));
+            }
         }
     }
 }
 
-class ValueComparator implements Comparator<Integer> {
-
-    Map<Integer, Integer> map;
-
-    public ValueComparator(Map<Integer, Integer> base) {
-        this.map = base;
-    }
-
-    public int compare(Integer a, Integer b) {
-        if (map.get(a) > map.get(b)) {
-            return -1;
-        } else if (map.get(a) == map.get(b)){
-            return a.compareTo(b);
-        } else {
-            return 1;
-        }
-    }
-}
 
 // >>> Don't Change
 class Pair<A extends Comparable<? super A>,
