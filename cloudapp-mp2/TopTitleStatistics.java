@@ -160,7 +160,7 @@ public class TopTitleStatistics extends Configured implements Tool {
         @Override
         protected void setup(Context context) throws IOException,InterruptedException {
             Configuration conf = context.getConfiguration();
-            this.N = conf.getInt("N", 10);
+            this.N = conf.getInt("N");
         }
 
         @Override
@@ -195,7 +195,7 @@ public class TopTitleStatistics extends Configured implements Tool {
         @Override
         protected void setup(Context context) throws IOException,InterruptedException {
             Configuration conf = context.getConfiguration();
-            this.N = conf.getInt("N", 10);
+            this.N = conf.getInt("N");
         }
 
         @Override
