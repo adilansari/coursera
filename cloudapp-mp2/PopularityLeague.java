@@ -132,13 +132,13 @@ public class PopularityLeague extends Configured implements Tool {
 
     public static class TopLinksMap extends Mapper<Text, Text, IntWritable, IntWritable> {
 
-        ArrayList<String> league = new ArrayList<String>();
+        List<String> league;
 
         @Override
         protected void setup(Context context) throws IOException,InterruptedException {
             Configuration conf = context.getConfiguration();
-            String league = conf.get("league");
-            this.league = Arrays.asList(readHDFSFile(league, conf).split("\n"));
+            String leagueFile = conf.get("league");
+            this.league = Arrays.asList(readHDFSFile(leagueFile, conf).split("\n"));
         }
         // TODO
         @Override
@@ -152,16 +152,6 @@ public class PopularityLeague extends Configured implements Tool {
                 context.write(new IntWritable(Integer.parseInt(node)), new IntWritable(count));
             }
         }
-
-        // @Override
-        // protected void cleanup(Context context) throws IOException, InterruptedException {
-        //     // TODO
-        //     for (Pair<Integer, Integer> item : countToNodeMap) {
-        //         Integer[] values = {item.second, item.first};
-        //         IntArrayWritable val = new IntArrayWritable(values);
-        //         context.write(NullWritable.get(), val);
-        //     }
-        // }
     }
 
     public static class TopLinksReduce extends Reducer<IntWritable, IntWritable, IntWritable, IntWritable> {
@@ -170,9 +160,9 @@ public class PopularityLeague extends Configured implements Tool {
         @Override
         public void reduce(IntWritable key, IntWritable values, Context context) throws IOException, InterruptedException {
             // TODO
-            Integer node = Integer.parseInt(key.toString());
+            Integer _node = Integer.parseInt(key.toString());
             Integer count = Integer.parseInt(values.toString());
-            countToNodeMap.add(new Pair<Integer, Integer>(count, node));
+            countToNodeMap.add(new Pair<Integer, Integer>(count, _node));
 
             Integer counter = 0;
             for (Pair<Integer, Integer> item: countToNodeMap) {
