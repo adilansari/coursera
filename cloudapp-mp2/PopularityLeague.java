@@ -86,6 +86,21 @@ public class PopularityLeague extends Configured implements Tool {
         return jobB.waitForCompletion(true) ? 0 : 1;
     }
 
+    public static String readHDFSFile(String path, Configuration conf) throws IOException{
+        Path pt=new Path(path);
+        FileSystem fs = FileSystem.get(pt.toUri(), conf);
+        FSDataInputStream file = fs.open(pt);
+        BufferedReader buffIn=new BufferedReader(new InputStreamReader(file));
+
+        StringBuilder everything = new StringBuilder();
+        String line;
+        while( (line = buffIn.readLine()) != null) {
+            everything.append(line);
+            everything.append("\n");
+        }
+        return everything.toString();
+    }
+
     public static class LinkCountMap extends Mapper<Object, Text, IntWritable, IntWritable> {
         // TODO
         @Override
@@ -117,6 +132,8 @@ public class PopularityLeague extends Configured implements Tool {
 
     public static class TopLinksMap extends Mapper<Text, Text, IntWritable, IntWritable> {
 
+        ArrayList<String> league = new ArrayList<String>();
+
         @Override
         protected void setup(Context context) throws IOException,InterruptedException {
             Configuration conf = context.getConfiguration();
@@ -130,7 +147,7 @@ public class PopularityLeague extends Configured implements Tool {
             Integer count = Integer.parseInt(value.toString());
             String node = key.toString();
 
-            if (league.contains(node)){
+            if (this.league.contains(node)){
                 // context.write(new Pair<Integer, Integer>(Integer.parseInt(node), count));
                 context.write(new IntWritable(Integer.parseInt(node)), new IntWritable(count));
             }
@@ -153,12 +170,10 @@ public class PopularityLeague extends Configured implements Tool {
         @Override
         public void reduce(IntWritable key, IntWritable values, Context context) throws IOException, InterruptedException {
             // TODO
-            for (IntArrayWritable val: values) {
-                IntWritable[] pair= (IntWritable[]) val.toArray();
-                Integer node = Integer.parseInt(pair[0].toString());
-                Integer count = Integer.parseInt(pair[1].toString());
-                countToNodeMap.add(new Pair<Integer, Integer>(count, node));
-            }
+            Integer node = Integer.parseInt(key.toString());
+            Integer count = Integer.parseInt(values.toString());
+            countToNodeMap.add(new Pair<Integer, Integer>(count, node));
+
             Integer counter = 0;
             for (Pair<Integer, Integer> item: countToNodeMap) {
                 counter++;
