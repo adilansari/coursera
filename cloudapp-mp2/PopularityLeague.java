@@ -188,15 +188,15 @@ public class PopularityLeague extends Configured implements Tool {
     }
 }
 
-class ValueComparator implements Comparator<String> {
+class ValueComparator implements Comparator<Integer> {
 
-    Map<String, Integer> map;
+    Map<Integer, Integer> map;
 
-    public ValueComparator(Map<String, Integer> base) {
+    public ValueComparator(Map<Integer, Integer> base) {
         this.map = base;
     }
 
-    public int compare(String a, String b) {
+    public int compare(Integer a, Integer b) {
         if (map.get(a) > map.get(b)) {
             return -1;
         } else if (map.get(a) == map.get(b)){
