@@ -158,10 +158,10 @@ public class PopularityLeague extends Configured implements Tool {
         private TreeSet<Pair<Integer, Integer>> countToNodeMap = new TreeSet<Pair<Integer, Integer>>();
 
         @Override
-        public void reduce(IntWritable key, IntWritable values, Context context) throws IOException, InterruptedException {
+        public void reduce(IntWritable key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
             // TODO
             Integer _node = Integer.parseInt(key.toString());
-            Integer count = Integer.parseInt(values.toString());
+            Integer count = Integer.parseInt(values.next().toString());
             countToNodeMap.add(new Pair<Integer, Integer>(count, _node));
 
             Integer counter = 0;
