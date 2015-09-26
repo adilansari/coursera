@@ -10,4 +10,3 @@ hadoop fs -rm -r /mp2/F-output
 hadoop jar PopularityLeague.jar PopularityLeague -D league=/mp2/misc/league.txt /mp2/links /mp2/F-output
 
 hadoop fs -cat /mp2/F-output/part*
-hadoop fs -cat /mp2/F-output/part-r-00000 | head -n 15

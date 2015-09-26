@@ -148,32 +148,61 @@ public class PopularityLeague extends Configured implements Tool {
             String node = key.toString();
 
             if (this.league.contains(node)){
-                // context.write(new Pair<Integer, Integer>(Integer.parseInt(node), count));
                 context.write(new IntWritable(Integer.parseInt(node)), new IntWritable(count));
             }
         }
     }
 
     public static class TopLinksReduce extends Reducer<IntWritable, IntWritable, IntWritable, IntWritable> {
-        private TreeSet<Pair<Integer, Integer>> countToNodeMap = new TreeSet<Pair<Integer, Integer>>();
+        // private TreeSet<Pair<Integer, Integer>> countToNodeMap = new TreeSet<Pair<Integer, Integer>>();
+        private HashMap<Integer, Integer> nodeCountMap = new HashMap<Integer, Integer>();
+
+        public static TreeMap<Integer, Integer> SortByValue(HashMap<Integer, Integer> map) {
+            ValueComparator vc =  new ValueComparator(map);
+            TreeMap<Integer,Integer> sortedMap = new TreeMap<Integer,Integer>(vc);
+            sortedMap.putAll(map);
+            return sortedMap;
+        }
 
         @Override
         public void reduce(IntWritable key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
             // TODO
-            Integer _node = Integer.parseInt(key.toString());
+            Integer node = Integer.parseInt(key.toString());
             Integer count= 0;
             for(IntWritable val: values){
                 count = val.get();
             }
-            countToNodeMap.add(new Pair<Integer, Integer>(count, _node));
+            nodeCountMap.put(node, count);
+
+            // TreeMap<Integer, Integer> sortedMap = SortByValue(nodeCountMap);
+            ValueComparator vc =  new ValueComparator(nodeCountMap);
+            TreeMap<Integer,Integer> sortedMap = new TreeMap<Integer,Integer>(vc);
+            sortedMap.putAll(nodeCountMap);
 
             Integer counter = 0;
-            for (Pair<Integer, Integer> item: countToNodeMap) {
+            for (Integer _node: sortedMap.keySet()) {
+                context.write(new IntWritable(_node), new IntWritable(counter));
                 counter++;
-                Integer node = new Integer(item.second);
-                IntWritable value = new IntWritable(item.first);
-                context.write(new IntWritable(node), new IntWritable(counter));
             }
+        }
+    }
+}
+
+class ValueComparator implements Comparator<String> {
+
+    Map<String, Integer> map;
+
+    public ValueComparator(Map<String, Integer> base) {
+        this.map = base;
+    }
+
+    public int compare(String a, String b) {
+        if (map.get(a) > map.get(b)) {
+            return -1;
+        } else if (map.get(a) == map.get(b)){
+            return a.compareTo(b);
+        } else {
+            return 1;
         }
     }
 }
