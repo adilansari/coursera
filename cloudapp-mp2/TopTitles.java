@@ -207,7 +207,7 @@ public class TopTitles extends Configured implements Tool {
                 String word = pair[0].toString();
                 Integer count = Integer.parseInt(pair[1].toString());
                 countToTitleMap.add(new Pair<Integer, String>(count, word));
-                if (countToTitleMap.size() > 10) {
+                if (countToTitleMap.size() > this.N) {
                     countToTitleMap.remove(countToTitleMap.first());
                 }
             }

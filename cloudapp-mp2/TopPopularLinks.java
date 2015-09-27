@@ -172,7 +172,7 @@ public class TopPopularLinks extends Configured implements Tool {
                 Integer node = Integer.parseInt(pair[0].toString());
                 Integer count = Integer.parseInt(pair[1].toString());
                 countToNodeMap.add(new Pair<Integer, Integer>(count, node));
-                if (countToNodeMap.size() > 10) {
+                if (countToNodeMap.size() > this.N) {
                     countToNodeMap.remove(countToNodeMap.first());
                 }
             }
