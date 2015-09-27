@@ -15,20 +15,29 @@ import backtype.storm.tuple.Values;
 public class FileReaderSpout implements IRichSpout {
   private SpoutOutputCollector _collector;
   private TopologyContext context;
+  FileReader fileReader;
+  ArrayList<String> inputTokens = new ArrayList<String>();
+  Random _rand;
 
 
   @Override
   public void open(Map conf, TopologyContext context,
-                   SpoutOutputCollector collector) {
+   SpoutOutputCollector collector) {
 
-     /*
-    ----------------------TODO-----------------------
-    Task: initialize the file reader
+    this._rand = new Random();
+    String line;
+    try {
+      this.context = context;
+      this.fileReader = new FileReader(conf.get("inputFile").toString());
+      BufferedReader bufferedReader = new BufferedReader(this.fileReader);
+      while ((line = bufferedReader.readLine()) != null) {
+        this.inputTokens.add(line);
+      }
+      fileReader.close();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
 
-
-    ------------------------------------------------- */
-
-    this.context = context;
     this._collector = collector;
   }
 
@@ -43,7 +52,18 @@ public class FileReaderSpout implements IRichSpout {
 
     ------------------------------------------------- */
 
-
+    // try {
+    //   BufferedReader bufferedReader = new BufferedReader(this.fileReader);
+    //   while ((line = bufferedReader.readLine()) != null) {
+    //     this._collector.emit(new Values(line));
+    //   }
+    //   fileReader.close();
+    // } catch (Exception e){
+    //   e.printStackTrace();
+    // }
+    Utils.sleep(100);
+    String sentence = this.inputTokens.get(this._rand.nextInt(this.inputTokens.size()));
+    this._collector.emit(new Values(sentence));
   }
 
   @Override
