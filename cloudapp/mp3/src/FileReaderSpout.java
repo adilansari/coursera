@@ -11,7 +11,6 @@ import backtype.storm.topology.IRichSpout;
 import backtype.storm.topology.OutputFieldsDeclarer;
 import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Values;
-import backtype.storm.utils.Utils;
 
 public class FileReaderSpout implements IRichSpout {
   private SpoutOutputCollector _collector;
@@ -50,7 +49,7 @@ public class FileReaderSpout implements IRichSpout {
       if((line = this.bufferedReader.readLine()) != null) {
         _collector.emit(new Values(line));
       } else {
-        Utils.sleep(100);
+        Thread.sleep(100);
       }
     } catch (Exception e){
       e.printStackTrace();
@@ -72,8 +71,12 @@ public class FileReaderSpout implements IRichSpout {
 
 
     ------------------------------------------------- */
-    this.bufferedReader.close();
-    this.fileReader.close();
+    try {
+      this.bufferedReader.close();
+      this.fileReader.close();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
 
