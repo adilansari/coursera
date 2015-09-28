@@ -4,8 +4,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Map;
-import java.util.Random;
-import java.util.ArrayList;
 
 import backtype.storm.spout.SpoutOutputCollector;
 import backtype.storm.task.TopologyContext;
@@ -19,29 +17,22 @@ public class FileReaderSpout implements IRichSpout {
   private SpoutOutputCollector _collector;
   private TopologyContext context;
   FileReader fileReader;
-  ArrayList<String> inputTokens = new ArrayList<String>();
-  Random _rand;
+  BufferedReader bufferedReader;
 
 
   @Override
   public void open(Map conf, TopologyContext context,
    SpoutOutputCollector collector) {
 
-    this._rand = new Random();
-    String line;
     try {
       this.context = context;
       this.fileReader = new FileReader(conf.get("inputFile").toString());
-      BufferedReader bufferedReader = new BufferedReader(this.fileReader);
-      while ((line = bufferedReader.readLine()) != null) {
-        this.inputTokens.add(line);
-      }
-      fileReader.close();
+      this.bufferedReader = new BufferedReader(this.fileReader);
     } catch (IOException e) {
       e.printStackTrace();
     }
 
-    this._collector = collector;
+    _collector = collector;
   }
 
   @Override
@@ -54,19 +45,16 @@ public class FileReaderSpout implements IRichSpout {
     2. don't forget to sleep when the file is entirely read to prevent a busy-loop
 
     ------------------------------------------------- */
-
-    // try {
-    //   BufferedReader bufferedReader = new BufferedReader(this.fileReader);
-    //   while ((line = bufferedReader.readLine()) != null) {
-    //     this._collector.emit(new Values(line));
-    //   }
-    //   fileReader.close();
-    // } catch (Exception e){
-    //   e.printStackTrace();
-    // }
-    Utils.sleep(100);
-    String sentence = this.inputTokens.get(this._rand.nextInt(this.inputTokens.size()));
-    this._collector.emit(new Values(sentence));
+    String line;
+    try {
+      if((line = this.bufferedReader.readLine()) != null) {
+        _collector.emit(new Values(line));
+      } else {
+        Utils.sleep(100);
+      }
+    } catch (Exception e){
+      e.printStackTrace();
+    }
   }
 
   @Override
@@ -84,7 +72,8 @@ public class FileReaderSpout implements IRichSpout {
 
 
     ------------------------------------------------- */
-
+    this.bufferedReader.close();
+    this.fileReader.close();
   }
 
 
