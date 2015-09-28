@@ -6,6 +6,8 @@ import backtype.storm.tuple.Tuple;
 import backtype.storm.tuple.Values;
 
 import java.util.HashMap;
+import java.util.Collections;
+import java.util.collection;
 
 /**
  * a bolt that finds the top n words.
@@ -29,7 +31,14 @@ public class TopNFinderBolt extends BaseBasicBolt {
 
 
     ------------------------------------------------- */
+    String word = tuple.getString(0);
+    Integer count = tuple.getInteger(1);
+    currentTopWords.put(word, count);
 
+    if (currentTopWords.size() > N) {
+      Collection<Integer> list = currentTopWords.values();
+      list.remove(Collections.min(list));
+    }
 
     //reports the top N words periodically
     if (System.currentTimeMillis() - lastReportTime >= intervalToReport) {
