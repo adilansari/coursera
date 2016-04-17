@@ -1,10 +1,6 @@
 package basicgraph;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /** A class that implements a directed graph. 
  * The graph may have self-loops, parallel edges. 
@@ -20,7 +16,15 @@ public class GraphAdjMatrix extends Graph {
 
 	private final int defaultNumVertices = 5;
 	private int[][] adjMatrix;
-	
+
+	@Override
+	public List<Integer> getVertices() {
+		List keys = new ArrayList<>();
+		for (int i = 0; i < adjMatrix.length; i++)
+			keys.add(i);
+		return keys;
+	}
+
 	/** Create a new empty Graph */
 	public GraphAdjMatrix () {
 		adjMatrix = new int[defaultNumVertices][defaultNumVertices];
@@ -108,7 +112,11 @@ public class GraphAdjMatrix extends Graph {
 	 * @return List<Integer> a list of indices of vertices.  
 	 */	
 	public List<Integer> getDistance2(int v) {
-		return null;
+		List<Integer> secondNeighbors = new ArrayList<>();
+		for (int i: getNeighbors(v)){
+			secondNeighbors.addAll(getNeighbors(i));
+		}
+		return secondNeighbors;
 	}
 	
 	/**
