@@ -10,7 +10,6 @@ package roadgraph;
 import java.util.*;
 import java.util.function.Consumer;
 
-import basicgraph.GraphAdjList;
 import geography.GeographicPoint;
 import util.GraphLoader;
 
@@ -22,7 +21,7 @@ import util.GraphLoader;
  */
 public class MapGraph {
     //TODO: Add your member variables here in WEEK 2
-    private Map<GeographicPoint, LinkedList<Tuple<GeographicPoint, Road>>> graph;
+    private Map<GeographicPoint, LinkedList<Edge>> graph;
 
 
     /**
@@ -67,10 +66,8 @@ public class MapGraph {
         return edges;
     }
 
-    public List<GeographicPoint> getNeighbors(GeographicPoint v) {
-        LinkedList<GeographicPoint> neighbors = new LinkedList<>();
-        graph.get(v).forEach(t -> neighbors.add((GeographicPoint) t.x));
-        return neighbors;
+    public LinkedList<Edge> getNeighbors(GeographicPoint v) {
+        return graph.get(v);
     }
 
     /**
@@ -109,8 +106,7 @@ public class MapGraph {
         if (!(graph.containsKey(from) || graph.containsKey(to)))
             throw new IllegalArgumentException();
 
-        Road road = new Road(roadName, roadType, length);
-        Tuple<GeographicPoint, Road> edge = new Tuple(to, road);
+        Edge edge = new Edge(from, to, roadName, roadType, length);
         graph.get(from).add(edge);
     }
 
@@ -148,32 +144,32 @@ public class MapGraph {
         LinkedList<GeographicPoint> queue = new LinkedList<>();
         LinkedHashSet<GeographicPoint> visited = new LinkedHashSet<>();
         HashMap<GeographicPoint, GeographicPoint> parentMap = new HashMap<>();
-        LinkedList<GeographicPoint> result;
         queue.add(start);
         visited.add(start);
         parentMap.put(start, null);
-        GeographicPoint current;
+        GeographicPoint current = null;
 
-        while (!queue.isEmpty()) {
+        while (!(queue.isEmpty() || goal.equals(current))) {
             current = queue.pollFirst();
 
-            if (current.equals(goal)) {
-                result = new LinkedList<>();
-                while (current != null) {
-                    result.add(current);
-                    current = parentMap.get(current);
-                }
-                Collections.reverse(result);
-                return result;
-            }
-
-            for (GeographicPoint n : getNeighbors(current)) {
+            for (Edge e : getNeighbors(current)) {
+                GeographicPoint n = e.getDestination();
                 if (visited.contains(n))
                     continue;
                 visited.add(n);
                 parentMap.put(n, current);
                 queue.add(n);
             }
+        }
+
+        if (goal.equals(current)) {
+            LinkedList<GeographicPoint> result = new LinkedList<>();
+            while (current != null) {
+                result.add(current);
+                current = parentMap.get(current);
+            }
+            Collections.reverse(result);
+            return result;
         }
 
         return null;
@@ -211,6 +207,54 @@ public class MapGraph {
 
         // Hook for visualization.  See writeup.
         //nodeSearched.accept(next.getLocation());
+        PriorityQueue<VertexDistanceVector> queue = new PriorityQueue<>(new Comparator<VertexDistanceVector>() {
+            @Override
+            public int compare(VertexDistanceVector o1, VertexDistanceVector o2) {
+                return (int) (o1.getDistance() - o2.getDistance());
+            }
+        });
+        LinkedHashSet<GeographicPoint> visited = new LinkedHashSet<>();
+        HashMap<GeographicPoint, GeographicPoint> parentMap = new HashMap<>();
+        VertexDistanceMap distanceMap = new VertexDistanceMap(getVertices());
+
+        distanceMap.updateDistance(start, 0);
+        queue.add(new VertexDistanceVector(start, 0));
+        parentMap.put(start, null);
+
+        VertexDistanceVector current = null;
+
+        while (!queue.isEmpty()) {
+            current = queue.poll();
+
+            if (visited.contains(current.getVertex()))
+                continue;
+            visited.add(current.getVertex());
+
+            if (current.getVertex().equals(goal))
+                break;
+
+            for(Edge e: getNeighbors(current.getVertex())){
+                GeographicPoint n = e.getDestination();
+                double newDistance = current.getDistance() + e.getLength();
+
+                if (newDistance > distanceMap.getDistance(n))
+                    continue;
+                distanceMap.updateDistance(n, newDistance);
+                parentMap.put(n, current.getVertex());
+                queue.add(new VertexDistanceVector(n, newDistance));
+            }
+        }
+
+        if (goal.equals(current.getVertex())) {
+            LinkedList<GeographicPoint> result = new LinkedList<>();
+            GeographicPoint currentVertex = current.getVertex();
+            while (currentVertex != null) {
+                result.add(currentVertex);
+                currentVertex = parentMap.get(currentVertex);
+            }
+            Collections.reverse(result);
+            return result;
+        }
 
         return null;
     }
