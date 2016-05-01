@@ -27,4 +27,12 @@ public class VertexDistanceVector {
     public void setDistance(double distance) {
         this.distance = distance;
     }
+
+    public double getHeuristicDistance(GeographicPoint goal){
+        return getDistance() + getEstimatedDistance(goal);
+    }
+
+    private double getEstimatedDistance(GeographicPoint goal){
+        return this.vertex.distance(goal);
+    }
 }
