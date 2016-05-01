@@ -2,14 +2,14 @@ package roadgraph;
 
 import geography.GeographicPoint;
 
-public class Edge {
+public class MapEdge {
     private GeographicPoint source;
     private GeographicPoint destination;
     private String name;
     private String type;
     private double length;
 
-    public Edge(GeographicPoint source, GeographicPoint destination, String name, String type, double length) {
+    public MapEdge(GeographicPoint source, GeographicPoint destination, String name, String type, double length) {
         this.source = source;
         this.destination = destination;
         this.name = name;

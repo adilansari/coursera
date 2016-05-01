@@ -21,7 +21,7 @@ import util.GraphLoader;
  */
 public class MapGraph {
     //TODO: Add your member variables here in WEEK 2
-    private Map<GeographicPoint, LinkedList<Edge>> graph;
+    private Map<GeographicPoint, LinkedList<MapEdge>> graph;
 
 
     /**
@@ -66,7 +66,7 @@ public class MapGraph {
         return edges;
     }
 
-    public LinkedList<Edge> getNeighbors(GeographicPoint v) {
+    public LinkedList<MapEdge> getNeighbors(GeographicPoint v) {
         return graph.get(v);
     }
 
@@ -106,7 +106,7 @@ public class MapGraph {
         if (!(graph.containsKey(from) || graph.containsKey(to)))
             throw new IllegalArgumentException();
 
-        Edge edge = new Edge(from, to, roadName, roadType, length);
+        MapEdge edge = new MapEdge(from, to, roadName, roadType, length);
         graph.get(from).add(edge);
     }
 
@@ -152,7 +152,7 @@ public class MapGraph {
         while (!(queue.isEmpty() || goal.equals(current))) {
             current = queue.pollFirst();
 
-            for (Edge e : getNeighbors(current)) {
+            for (MapEdge e : getNeighbors(current)) {
                 GeographicPoint n = e.getDestination();
                 if (visited.contains(n))
                     continue;
@@ -207,12 +207,15 @@ public class MapGraph {
 
         // Hook for visualization.  See writeup.
         //nodeSearched.accept(next.getLocation());
-        PriorityQueue<VertexDistanceVector> queue = new PriorityQueue<>(new Comparator<VertexDistanceVector>() {
-            @Override
-            public int compare(VertexDistanceVector o1, VertexDistanceVector o2) {
-                return (int) (o1.getDistance() - o2.getDistance());
-            }
-        });
+        Comparator<VertexDistanceVector> comparator =
+                (VertexDistanceVector o1, VertexDistanceVector o2)->(int) (o1.getDistance() - o2.getDistance());
+
+        return shortestPathSearch(start, goal, comparator);
+    }
+
+    private List<GeographicPoint> shortestPathSearch(GeographicPoint start,
+                                                     GeographicPoint goal, Comparator comparator){
+        PriorityQueue<VertexDistanceVector> queue = new PriorityQueue<>(comparator);
         LinkedHashSet<GeographicPoint> visited = new LinkedHashSet<>();
         HashMap<GeographicPoint, GeographicPoint> parentMap = new HashMap<>();
         VertexDistanceMap distanceMap = new VertexDistanceMap(getVertices());
@@ -223,9 +226,10 @@ public class MapGraph {
 
         VertexDistanceVector current = null;
 
+        int removeCount = 0;
         while (!queue.isEmpty()) {
             current = queue.poll();
-
+            removeCount++;
             if (visited.contains(current.getVertex()))
                 continue;
             visited.add(current.getVertex());
@@ -233,7 +237,7 @@ public class MapGraph {
             if (current.getVertex().equals(goal))
                 break;
 
-            for(Edge e: getNeighbors(current.getVertex())){
+            for(MapEdge e: getNeighbors(current.getVertex())){
                 GeographicPoint n = e.getDestination();
                 double newDistance = current.getDistance() + e.getLength();
 
@@ -245,6 +249,7 @@ public class MapGraph {
             }
         }
 
+        System.out.println("removeCount: " + removeCount);
         if (goal.equals(current.getVertex())) {
             LinkedList<GeographicPoint> result = new LinkedList<>();
             GeographicPoint currentVertex = current.getVertex();
@@ -289,21 +294,23 @@ public class MapGraph {
 
         // Hook for visualization.  See writeup.
         //nodeSearched.accept(next.getLocation());
+        Comparator<VertexDistanceVector> comparator =
+                (VertexDistanceVector o1, VertexDistanceVector o2)->(int) (o1.getHeuristicDistance(goal) - o2.getHeuristicDistance(goal));
 
-        return null;
+        return shortestPathSearch(start, goal, comparator);
     }
 
 
     public static void main(String[] args) {
-        System.out.print("Making a new map...");
-        MapGraph theMap = new MapGraph();
-        System.out.print("DONE. \nLoading the map...");
-        GraphLoader.loadRoadMap("data/testdata/simpletest.map", theMap);
-        System.out.println("DONE.");
+//        System.out.print("Making a new map...");
+//        MapGraph theMap1 = new MapGraph();
+//        System.out.print("DONE. \nLoading the map...");
+//        GraphLoader.loadRoadMap("data/testdata/simpletest.map", theMap1);
+//        System.out.println("DONE.");
 
         // You can use this method for testing.
 
-		/* Use this code in Week 3 End of Week Quiz
+		//Use this code in Week 3 End of Week Quiz
         MapGraph theMap = new MapGraph();
 		System.out.print("DONE. \nLoading the map...");
 		GraphLoader.loadRoadMap("data/maps/utc.map", theMap);
@@ -311,12 +318,11 @@ public class MapGraph {
 
 		GeographicPoint start = new GeographicPoint(32.8648772, -117.2254046);
 		GeographicPoint end = new GeographicPoint(32.8660691, -117.217393);
-		
-		
+
+
 		List<GeographicPoint> route = theMap.dijkstra(start,end);
 		List<GeographicPoint> route2 = theMap.aStarSearch(start,end);
 
-		*/
 
     }
 
