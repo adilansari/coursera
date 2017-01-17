@@ -1,4 +1,4 @@
-[info] Updating {file:/Users/adil/onebox/coursera/scala/recfun/project/}recfun-build...
+[info] Updating {file:/Users/Gunner/onebox/coursera/scala/recfun/project/}recfun-build...
 [debug] :: resolving dependencies :: default#recfun-build;0.1-SNAPSHOT
 [debug] 	confs: [compile, runtime, test, provided, optional, compile-internal, runtime-internal, test-internal, plugin, sources, docs, pom, scala-tool]
 [debug] 	validate = true
@@ -3935,19 +3935,19 @@
 [debug] 	[NOT REQUIRED] org.scala-sbt#apply-macro;0.13.7!apply-macro.jar
 [debug] 	[NOT REQUIRED] org.scala-lang#jline;2.10.4!jline.jar
 [debug] 	[NOT REQUIRED] org.fusesource.jansi#jansi;1.4!jansi.jar
-[debug] :: resolution report :: resolve 815ms :: artifacts dl 31ms
-[debug] 	report for default#recfun-build;0.1-SNAPSHOT compile produced in /Users/adil/onebox/coursera/scala/recfun/project/target/resolution-cache/reports/default-recfun-build-compile.xml
-[debug] 	report for default#recfun-build;0.1-SNAPSHOT runtime produced in /Users/adil/onebox/coursera/scala/recfun/project/target/resolution-cache/reports/default-recfun-build-runtime.xml
-[debug] 	report for default#recfun-build;0.1-SNAPSHOT test produced in /Users/adil/onebox/coursera/scala/recfun/project/target/resolution-cache/reports/default-recfun-build-test.xml
-[debug] 	report for default#recfun-build;0.1-SNAPSHOT provided produced in /Users/adil/onebox/coursera/scala/recfun/project/target/resolution-cache/reports/default-recfun-build-provided.xml
-[debug] 	report for default#recfun-build;0.1-SNAPSHOT optional produced in /Users/adil/onebox/coursera/scala/recfun/project/target/resolution-cache/reports/default-recfun-build-optional.xml
-[debug] 	report for default#recfun-build;0.1-SNAPSHOT compile-internal produced in /Users/adil/onebox/coursera/scala/recfun/project/target/resolution-cache/reports/default-recfun-build-compile-internal.xml
-[debug] 	report for default#recfun-build;0.1-SNAPSHOT runtime-internal produced in /Users/adil/onebox/coursera/scala/recfun/project/target/resolution-cache/reports/default-recfun-build-runtime-internal.xml
-[debug] 	report for default#recfun-build;0.1-SNAPSHOT test-internal produced in /Users/adil/onebox/coursera/scala/recfun/project/target/resolution-cache/reports/default-recfun-build-test-internal.xml
-[debug] 	report for default#recfun-build;0.1-SNAPSHOT plugin produced in /Users/adil/onebox/coursera/scala/recfun/project/target/resolution-cache/reports/default-recfun-build-plugin.xml
-[debug] 	report for default#recfun-build;0.1-SNAPSHOT sources produced in /Users/adil/onebox/coursera/scala/recfun/project/target/resolution-cache/reports/default-recfun-build-sources.xml
-[debug] 	report for default#recfun-build;0.1-SNAPSHOT docs produced in /Users/adil/onebox/coursera/scala/recfun/project/target/resolution-cache/reports/default-recfun-build-docs.xml
-[debug] 	report for default#recfun-build;0.1-SNAPSHOT pom produced in /Users/adil/onebox/coursera/scala/recfun/project/target/resolution-cache/reports/default-recfun-build-pom.xml
-[debug] 	report for default#recfun-build;0.1-SNAPSHOT scala-tool produced in /Users/adil/onebox/coursera/scala/recfun/project/target/resolution-cache/reports/default-recfun-build-scala-tool.xml
-[debug] 	resolve done (815ms resolve - 31ms download)
+[debug] :: resolution report :: resolve 967ms :: artifacts dl 14ms
+[debug] 	report for default#recfun-build;0.1-SNAPSHOT compile produced in /Users/Gunner/onebox/coursera/scala/recfun/project/target/resolution-cache/reports/default-recfun-build-compile.xml
+[debug] 	report for default#recfun-build;0.1-SNAPSHOT runtime produced in /Users/Gunner/onebox/coursera/scala/recfun/project/target/resolution-cache/reports/default-recfun-build-runtime.xml
+[debug] 	report for default#recfun-build;0.1-SNAPSHOT test produced in /Users/Gunner/onebox/coursera/scala/recfun/project/target/resolution-cache/reports/default-recfun-build-test.xml
+[debug] 	report for default#recfun-build;0.1-SNAPSHOT provided produced in /Users/Gunner/onebox/coursera/scala/recfun/project/target/resolution-cache/reports/default-recfun-build-provided.xml
+[debug] 	report for default#recfun-build;0.1-SNAPSHOT optional produced in /Users/Gunner/onebox/coursera/scala/recfun/project/target/resolution-cache/reports/default-recfun-build-optional.xml
+[debug] 	report for default#recfun-build;0.1-SNAPSHOT compile-internal produced in /Users/Gunner/onebox/coursera/scala/recfun/project/target/resolution-cache/reports/default-recfun-build-compile-internal.xml
+[debug] 	report for default#recfun-build;0.1-SNAPSHOT runtime-internal produced in /Users/Gunner/onebox/coursera/scala/recfun/project/target/resolution-cache/reports/default-recfun-build-runtime-internal.xml
+[debug] 	report for default#recfun-build;0.1-SNAPSHOT test-internal produced in /Users/Gunner/onebox/coursera/scala/recfun/project/target/resolution-cache/reports/default-recfun-build-test-internal.xml
+[debug] 	report for default#recfun-build;0.1-SNAPSHOT plugin produced in /Users/Gunner/onebox/coursera/scala/recfun/project/target/resolution-cache/reports/default-recfun-build-plugin.xml
+[debug] 	report for default#recfun-build;0.1-SNAPSHOT sources produced in /Users/Gunner/onebox/coursera/scala/recfun/project/target/resolution-cache/reports/default-recfun-build-sources.xml
+[debug] 	report for default#recfun-build;0.1-SNAPSHOT docs produced in /Users/Gunner/onebox/coursera/scala/recfun/project/target/resolution-cache/reports/default-recfun-build-docs.xml
+[debug] 	report for default#recfun-build;0.1-SNAPSHOT pom produced in /Users/Gunner/onebox/coursera/scala/recfun/project/target/resolution-cache/reports/default-recfun-build-pom.xml
+[debug] 	report for default#recfun-build;0.1-SNAPSHOT scala-tool produced in /Users/Gunner/onebox/coursera/scala/recfun/project/target/resolution-cache/reports/default-recfun-build-scala-tool.xml
+[debug] 	resolve done (967ms resolve - 14ms download)
 [info] Done updating.
